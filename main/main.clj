@@ -1,6 +1,6 @@
-(ns main)
+(ns main (:import [java.util.function Function]))
 
-(defn- ^java.util.function.Function function [^java.util.function.Function f] f)
+(defn- ^Function function [^Function f] f)
 
 (defn make_env []
   {:scope
@@ -11,7 +11,7 @@
     (list? node)
     (let [name (first node)
           args (rest node)
-          ^java.util.function.Function f (get (:scope env) name)]
+          ^Function f (get (:scope env) name)]
       (.apply f args))
 
     (vector? node) (FIXME)

@@ -1,13 +1,8 @@
-(ns test)
+(ns test
+  (:import [main Main]))
 
-;; (ns test
-;;   (:require ["../src/main" :as m]))
-
-;; (println
-;;  "Test result:"
-;;  (= 4 (m/add 2 2)))
-
-(defn ignore [] (+ 2 2))
-
-;; (defn add [a b] (+ a b))
-
+(defn ^void main [^"String[]" args]
+  (->
+   (Main/make_env)
+   (Main/eval (list "+" 2 2))
+   (println)))

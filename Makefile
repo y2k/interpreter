@@ -1,18 +1,15 @@
 PRELUDE_PATH := vendor/prelude/java/src/prelude.clj
 OUT_DIR := .github/bin
-SRC_DIRS := src test
+SRC_DIRS := main test
 
 .PHONY: test
 test: build
-	@ node $(OUT_DIR)/test/test.js
+	@ clear && java -cp .github/bin/out test.Test
 
 .PHONY: build
 build:
-	@ set -e; find $(SRC_DIRS) -name '*.clj' | while read clj_file; do \
-		out_file=$(OUT_DIR)/$$(echo $$clj_file | sed 's|\.clj$$|.java|'); \
-		mkdir -p $$(dirname $$out_file); \
-		clj2js java $$clj_file $(PRELUDE_PATH) > $$out_file; \
-	  done
+	@ .github/build.generated.sh
+	@ cd .github/bin && javac -d out **/*.java
 
 .PHONY: clean
 clean:
