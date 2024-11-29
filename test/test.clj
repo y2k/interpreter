@@ -1,14 +1,14 @@
-(ns test (:import [main Main]
+(ns test (:import [interpreter Interpreter]
                   [java.nio.file Files Path]
                   [java.util List]))
 
 (defn ^void main [^"String[]" args]
   (let [[r1 env2] (->
-                   (Main/make_env)
-                   (Main/eval (checked! (Files/readAllLines (Path/of "test/sample.lisp")))))]
+                   (Interpreter/make_env)
+                   (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/sample.1.gen.lisp")))))]
     (println "=== CALL function #2 ===")
     (->
      env2
-     (Main/eval (checked! (Files/readAllLines (Path/of "test/sample.3.lisp"))))
+     (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/sample.2.gen.lisp"))))
      first
      println)))

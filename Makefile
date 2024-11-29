@@ -4,12 +4,19 @@ SRC_DIRS := main test
 
 .PHONY: test
 test: build
+	@ clj2js bytecode test/sample.1.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.1.gen.lisp
+	@ clj2js bytecode test/sample.2.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.2.gen.lisp
 	@ clear && java -cp .github/bin/out test.Test
 
 .PHONY: build
 build:
-	@ .github/build.generated.sh
+	@ mkdir -p $(OUT_DIR)/y2k && cp vendor/prelude/java/src/RT.java $(OUT_DIR)/y2k/
+	@ .github/build.gen.sh
 	@ cd .github/bin && javac -d out **/*.java
+
+.PHONY: gen_build
+gen_build:
+	@ clj2js make_build_script $$PWD $$PWD/.github/bin > .github/build.gen.sh
 
 .PHONY: clean
 clean:
