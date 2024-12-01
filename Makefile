@@ -6,6 +6,8 @@ SRC_DIRS := main test
 test: build
 	@ clj2js bytecode test/sample.1.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.1.gen.lisp
 	@ clj2js bytecode test/sample.2.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.2.gen.lisp
+	@ clj2js bytecode test/sample.3.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.3.gen.lisp
+	@ clj2js bytecode test/sample.4.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.4.gen.lisp
 	@ clear && java -cp .github/bin/out test.Test
 
 .PHONY: build
