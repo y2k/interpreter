@@ -4,10 +4,12 @@ SRC_DIRS := main test
 
 .PHONY: test
 test: build
-	@ clj2js bytecode test/sample.1.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.1.gen.lisp
-	@ clj2js bytecode test/sample.2.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.2.gen.lisp
-	@ clj2js bytecode test/sample.3.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.3.gen.lisp
-	@ clj2js bytecode test/sample.4.lisp $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/sample.4.gen.lisp
+	@ mkdir -p test/samples/out/
+	@ clj2js bytecode test/samples/1.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/1.gen.lisp
+	@ clj2js bytecode test/samples/2.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/2.gen.lisp
+	@ clj2js bytecode test/samples/3.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/3.gen.lisp
+	@ clj2js bytecode test/samples/4.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/4.gen.lisp
+	@ clj2js bytecode test/samples/5.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/5.gen.lisp
 	@ clear && java -cp .github/bin/out test.Test
 
 .PHONY: build
