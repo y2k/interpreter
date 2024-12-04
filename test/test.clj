@@ -12,41 +12,19 @@
                         (reset! a x) x))
     :str (function (fn [xs] (str (into-array2 (.-class Object) xs))))}))
 
-(defn- test1 []
-  (let [[r1 env2] (->
-                   (Interpreter/make_env {})
-                   (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/samples/out/1.gen.lisp")))))]
-    ;; (println "env:" env2)
-    (println "=== CALL function #2 ===")
-    (->
-     env2
-     (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/samples/out/2.gen.lisp"))))
-     first
-     println)))
-
-(defn- test2 []
-  (->
-   (make_env)
-   (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/samples/out/3.gen.lisp"))))
-   first
-   println))
-
-(defn- test3 []
-  (->
-   (make_env)
-   (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/samples/out/4.gen.lisp"))))
-   first
-   println))
-
-(defn- test4 []
-  (->
-   (make_env)
-   (Interpreter/eval (checked! (Files/readAllLines (Path/of "test/samples/out/5.gen.lisp"))))
-   first
-   println))
+(defn- test [id expected]
+  (let [actual (->
+                (make_env)
+                (Interpreter/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".gen.lisp")))))
+                first
+                str)]
+    (if (= actual expected)
+      null
+      (FIXME expected " <> " actual))))
 
 (defn ^void main [^"String[]" args]
-  ;; (test1)
-  ;; (test2)
-  ;; (test3)
-  (test4))
+  (test 2 "6")
+  (test 3 "[a1, b2]")
+  (test 4 "1")
+  (test 5 "foo3bar")
+  (test 6 "a3b"))

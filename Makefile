@@ -5,11 +5,11 @@ SRC_DIRS := main test
 .PHONY: test
 test: build
 	@ mkdir -p test/samples/out/
-	@ clj2js bytecode test/samples/1.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/1.gen.lisp
-	@ clj2js bytecode test/samples/2.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/2.gen.lisp
-	@ clj2js bytecode test/samples/3.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/3.gen.lisp
-	@ clj2js bytecode test/samples/4.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/4.gen.lisp
-	@ clj2js bytecode test/samples/5.clj $$PWD/vendor/prelude/interpreter/src/prelude.clj > test/samples/out/5.gen.lisp
+	@ clj2js bytecode test/samples/2.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/2.gen.lisp
+	@ clj2js bytecode test/samples/3.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/3.gen.lisp
+	@ clj2js bytecode test/samples/4.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/4.gen.lisp
+	@ clj2js bytecode test/samples/5.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/5.gen.lisp
+	@ clj2js bytecode test/samples/6.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/6.gen.lisp
 	@ clear && java -cp .github/bin/out test.Test
 
 .PHONY: build
