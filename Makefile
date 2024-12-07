@@ -10,6 +10,7 @@ test: build
 	@ clj2js bytecode test/samples/4.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/4.gen.lisp
 	@ clj2js bytecode test/samples/5.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/5.gen.lisp
 	@ clj2js bytecode test/samples/6.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/6.gen.lisp
+	@ clj2js bytecode test/samples/7.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/7.gen.lisp
 	@ clear && java -cp .github/bin/out test.Test
 
 .PHONY: build
