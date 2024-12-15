@@ -7,7 +7,6 @@
    {}))
 
 (defn- test [id expected]
-  (println "TEST:" id)
   (let [result (->
                 (make_env)
                 (Interpreter/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".gen.lisp")))))
@@ -15,7 +14,7 @@
         actual (-> result str)]
     (if (= actual expected)
       null
-      (FIXME expected " <> " actual))))
+      (FIXME "TEST " id ": " expected " <> " actual))))
 
 (defn ^void main [^"String[]" args]
   (test 2 "6")
