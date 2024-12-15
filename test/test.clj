@@ -7,11 +7,12 @@
    {}))
 
 (defn- test [id expected]
-  (let [actual (->
+  (println "TEST:" id)
+  (let [result (->
                 (make_env)
                 (Interpreter/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".gen.lisp")))))
-                first
-                str)]
+                first)
+        actual (-> result str)]
     (if (= actual expected)
       null
       (FIXME expected " <> " actual))))

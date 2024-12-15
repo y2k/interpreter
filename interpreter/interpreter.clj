@@ -33,11 +33,13 @@
                     (let [aa (as (if (is a String) (Integer/parseInt (as a String)) a) int)
                           bb (as (if (is b String) (Integer/parseInt (as b String)) b) int)]
                       (+ aa bb))))
+     := (function (fn [[a b]] (= a b)))
      :get (function (fn [[xs i]] (get xs i)))
      :vector (function (fn [xs] xs))
      :atom (function (fn [[x]] (atom x)))
      :deref (function (fn [[x]] (deref x)))
      :reset! (function (fn [[a x]] (reset! a x) x))
+     :println (function (fn [xs] (println (into-array2 (.-class Object) xs))))
      :str (function (fn [xs] (str (into-array2 (.-class Object) xs))))
      :hash-map (function (fn [xs] (hash-map (into-array2 (.-class Object) xs))))}
     scope)})
@@ -85,10 +87,13 @@
       (eval_do_body env2 tail))))
 
 (defn eval_arg [env xs]
+  ;; (println "EVAL_ARG:" xs)
   (if (empty? xs)
     []
-    (let [arg (first xs)]
-      (concat [(first (rec_eval env arg))] (eval_arg env (rest xs))))))
+    (let [arg (first xs)
+          x (first (rec_eval env arg))]
+      ;; (println "arg:" arg)
+      (concat [x] (eval_arg env (rest xs))))))
 
 (defn- rec_eval [env sexp]
   ;; (println "EVAL:" sexp env)
@@ -97,18 +102,18 @@
     (is sexp String) [(resolve_value env (as sexp String)) env]
     (vector? sexp) (let [^String name (first sexp)]
                      (case name
-                       "do" (eval_do_body env (rest sexp))
-                       "def" (let [dname (second sexp)]
-                               (if (= 3 (count sexp))
-                                 [true (register_value env dname (first (rec_eval env (get sexp 2))))]
-                                 [(scope_contains env dname) env]))
+                       "do*" (eval_do_body env (rest sexp))
+                       "def*" (let [dname (second sexp)]
+                                (if (= 3 (count sexp))
+                                  [true (register_value env dname (first (rec_eval env (get sexp 2))))]
+                                  [(scope_contains env dname) env]))
                        "let*" (let [dname (second sexp)]
                                 [null (register_value env dname (first (rec_eval env (get sexp 2))))])
-                       "if" (let [[cond env2] (rec_eval env (second sexp))]
+                       "if*" (let [[cond env2] (rec_eval env (second sexp))]
                               ;; (println "IF:" cond sexp)
-                              (if (as cond boolean)
-                                (rec_eval env2 (get sexp 2))
-                                (rec_eval env2 (get sexp 3))))
+                               (if (as cond boolean)
+                                 (rec_eval env2 (get sexp 2))
+                                 (rec_eval env2 (get sexp 3))))
                        "fn*" [(function (fn [args]
                                           (let [args_names (second sexp)]
                                             ;; (println "FN*" args_names args env)
