@@ -1,4 +1,4 @@
-(ns interpreter (:import [java.util.function Function]))
+(ns _ (:import [java.util.function Function]))
 
 ;; Recursive Descent Parser
 

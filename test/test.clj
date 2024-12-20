@@ -1,15 +1,15 @@
-(ns test (:import [interpreter Interpreter]
-                  [java.nio.file Files Path]
-                  [java.util List]))
+(ns _ (:import [java.nio.file Files Path]
+               [java.util List])
+    (:require ["../src/interpreter" :as i]))
 
 (defn- make_env []
-  (Interpreter/make_env
+  (i/make_env
    {}))
 
 (defn- test [id expected]
   (let [result (->
                 (make_env)
-                (Interpreter/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".gen.lisp")))))
+                (i/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".gen.lisp")))))
                 first)
         actual (-> result str)]
     (if (= actual expected)

@@ -5,13 +5,13 @@ SRC_DIRS := main test
 .PHONY: test
 test: build
 	@ mkdir -p test/samples/out/
-	@ clj2js bytecode test/samples/2.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/2.gen.lisp
-	@ clj2js bytecode test/samples/3.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/3.gen.lisp
-	@ clj2js bytecode test/samples/4.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/4.gen.lisp
-	@ clj2js bytecode test/samples/5.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/5.gen.lisp
-	@ clj2js bytecode test/samples/6.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/6.gen.lisp
-	@ clj2js bytecode test/samples/7.clj $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/7.gen.lisp
-	@ clear && java -cp .github/bin/out test.Test
+	@ clj2js bytecode test/samples/2.lisp $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/2.gen.lisp
+	@ clj2js bytecode test/samples/3.lisp $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/3.gen.lisp
+	@ clj2js bytecode test/samples/4.lisp $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/4.gen.lisp
+	@ clj2js bytecode test/samples/5.lisp $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/5.gen.lisp
+	@ clj2js bytecode test/samples/6.lisp $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/6.gen.lisp
+	@ clj2js bytecode test/samples/7.lisp $$PWD/vendor/prelude/bytecode/prelude.clj > test/samples/out/7.gen.lisp
+	@ clear && java -cp .github/bin/out test.test
 
 .PHONY: build
 build:
@@ -21,7 +21,11 @@ build:
 
 .PHONY: gen_build
 gen_build:
-	@ clj2js make_build_script $$PWD $$PWD/.github/bin > .github/build.gen.sh
+	@ export OCAMLRUNPARAM=b && clj2js make_build_script \
+		-path src \
+		-path test \
+		-target .github/bin > .github/build.gen.sh \
+	@ chmod +x .github/build.gen.sh
 
 .PHONY: clean
 clean:
