@@ -2,6 +2,8 @@
 
 ;; Recursive Descent Parser
 
+(declare parse)
+
 (defn- parse_list [tokens ^int index]
   (let [token (get tokens index)]
     (if (= token ")")
