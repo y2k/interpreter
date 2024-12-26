@@ -24,7 +24,7 @@ gen_build:
 	@ export OCAMLRUNPARAM=b && clj2js make_build_script \
 		-path src \
 		-path test \
-		-target .github/bin > .github/build.gen.sh \
+		-target .github/bin > .github/build.gen.sh
 	@ chmod +x .github/build.gen.sh
 
 .PHONY: clean
