@@ -1,4 +1,3 @@
-PRELUDE_PATH := vendor/prelude/java/src
 OUT_DIR := .github/bin
 SRC_DIRS := main test
 
@@ -17,8 +16,8 @@ test: build
 
 .PHONY: build
 build:
-	@ mkdir -p $(OUT_DIR)/y2k && cp $(PRELUDE_PATH)/RT.java $(OUT_DIR)/y2k/
-	@ PRELUDE_JAVA=$(PRELUDE_PATH) .github/build.gen.sh
+	@ mkdir -p $(OUT_DIR)/y2k && clj2js gen -target java > $(OUT_DIR)/y2k/RT.java
+	@ export PRELUDE_JAVA=0 && .github/build.gen.sh
 	@ cd .github/bin && javac -d out **/*.java
 
 .PHONY: gen_build
