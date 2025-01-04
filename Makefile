@@ -12,6 +12,7 @@ test: build
 	@ clj2js bytecode test/samples/6.lisp > test/samples/out/6.gen.lisp
 	@ clj2js bytecode test/samples/7.lisp > test/samples/out/7.gen.lisp
 	@ clj2js bytecode test/samples/8.lisp > test/samples/out/8.gen.lisp
+	@ clj2js bytecode test/samples/9.lisp > test/samples/out/9.gen.lisp
 	@ clear && java -cp .github/bin/out test.test
 
 .PHONY: build

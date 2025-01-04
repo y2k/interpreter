@@ -13,8 +13,10 @@
                 first)
         actual (-> result str)]
     (if (= actual expected)
-      null
+      nil
       (FIXME "TEST " id ": " expected " <> " actual))))
+
+;; (println "1")
 
 (defn ^void main [^"String[]" args]
   (test 2 "6")
@@ -23,4 +25,5 @@
   (test 5 "foo3bar")
   (test 6 "a3b")
   (test 7 "[1, 2, 3]")
-  (test 8 "[1234, 12\"34]"))
+  (test 8 "[1234, 12\"34]")
+  (test 9 "null"))
