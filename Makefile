@@ -16,24 +16,12 @@ test: build
 
 .PHONY: build
 build:
-	@ mkdir -p $(OUT_DIR)/y2k && clj2js gen -target java > $(OUT_DIR)/y2k/RT.java
-	@ export PRELUDE_JAVA=0 && .github/build.gen.sh
+	@ mkdir -p $(OUT_DIR)/y2k
+	@ export OCAMLRUNPARAM=b && clj2js compile gen -target java > $(OUT_DIR)/y2k/RT.java
+	@ export OCAMLRUNPARAM=b && clj2js compile -target repl -src build.clj > $(OUT_DIR)/Makefile
+	@ $(MAKE) -f $(OUT_DIR)/Makefile
 	@ cd .github/bin && javac -d out **/*.java
-
-.PHONY: gen_build
-gen_build:
-	@ export OCAMLRUNPARAM=b && clj2js make_build_script \
-		-path src \
-		-path test \
-		-target .github/bin > .github/build.gen.sh
-	@ chmod +x .github/build.gen.sh
 
 .PHONY: clean
 clean:
 	@ rm -rf $(OUT_DIR)
-
-.PHONY: init
-init:
-	@ rm -rf .git && rm -rf vendor && rm -f .gitmodules && git init .
-	@ git submodule add git@github.com:y2k/prelude.git vendor/prelude
-	@ git submodule add git@github.com:y2k/packages.git vendor/packages
