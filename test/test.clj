@@ -9,14 +9,12 @@
 (defn- test [id expected]
   (let [result (->
                 (make_env)
-                (i/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".gen.lisp")))))
+                (i/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".bytecode")))))
                 first)
         actual (-> result str)]
     (if (= actual expected)
       nil
       (FIXME "TEST " id ": " expected " <> " actual))))
-
-;; (println "1")
 
 (defn ^void main [^"String[]" args]
   (test 2 "6")
