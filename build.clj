@@ -17,4 +17,4 @@
    {:lang "bytecode"
     :src-dir "test/samples"
     :target-dir "test/samples/out"
-    :items ["2" "3" "4" "5" "6" "7" "8" "9"]})])
+    :items ["1" "2" "3" "4" "5" "6" "7" "8" "9"]})])
