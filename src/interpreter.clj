@@ -96,7 +96,7 @@
   (let [[sexp] (parse lexemes 0)]
     (rec_eval env sexp)))
 
-(defn eval_do_body [env sexps]
+(defn- eval_do_body [env sexps]
   (let [[node] sexps
         tail (rest sexps)
         [r env2] (rec_eval env node)]
@@ -104,7 +104,7 @@
       [r env2]
       (eval_do_body env2 tail))))
 
-(defn eval_arg [env xs]
+(defn- eval_arg [env xs]
   ;; (println "EVAL_ARG:" xs)
   (if (empty? xs)
     []
@@ -137,12 +137,12 @@
                                  (rec_eval env2 (get sexp 2))
                                  (rec_eval env2 (get sexp 3))))
                        "fn*" [(fn [args]
-                                (let [[_ args_names] sexp]
+                                (let [[_ args_names body] sexp]
                                   ;; (println "FN*" args_names args env)
                                   (first
-                                   (eval_do_body
+                                   (rec_eval
                                     (merge_args_with_values env args_names args)
-                                    (rest (rest sexp))))))
+                                    body))))
                               env]
                        (let [f (as (resolve_value env name) Function)]
                          [(.apply f (eval_arg env (rest sexp))) env])))
