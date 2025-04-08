@@ -1,5 +1,5 @@
 (def foo 1)
 
-(defn main [] user/foo)
+(defn main [] foo)
 
 (main)

@@ -25,6 +25,17 @@
     ")" (FIXME index tokens)
     [(parse_atom (as (get tokens index) String)) (+ index 1)]))
 
+(defn- serialize_to_string [sexp]
+  ;; (eprintln "LOG:serialize_to_string" sexp)
+  (cond
+    (is sexp String) sexp
+    (is sexp Boolean) (if (cast boolean sexp) "true" "false")
+    (= sexp nil) "nil"
+    :else (let [body (if (= 0 (count sexp))
+                       "\n"
+                       (reduce (fn [a x] (str a "\n" (serialize_to_string x))) "" sexp))]
+            (str "(" body "\n)"))))
+
 ;; Scope
 
 (def- gensym_atom (atom 0))
@@ -53,27 +64,30 @@
      :empty? (fn [[x]] (empty? x))}
     scope)})
 
-(defn- resolve_value [env ^String name]
-  ;; (println "RESOLVE:" name env)
-  (cond
-    (.matches name "-?\\d+(\\.\\d+)?") (Integer/parseInt name)
-    (.startsWith name "\"") (unescape (.substring name 1 (- (.length name) 1)))
-    (.startsWith name ":") (.substring name 1 (.length name))
-    :else (if (contains? (:scope env) name)
-            (get (:scope env) name)
-            (if (contains? (:ns env) name)
-              (deref (get (:ns env) name))
-              (FIXME name " | SCOPE: " (map (fn [[k]] k) (:scope env)))))))
-
-(defn- register_value [env name value]
-  ;; (println "REGISTER:" name value)
-  (assoc env :scope (assoc (:scope env) name value)))
-
 ;; Namespace definitions
 
 (defn- register_def [env name value]
   ;; (println "REGISTER:" name value)
   (assoc env :ns (assoc (:ns env) name value)))
+
+(defn- register_value [env name value]
+    ;; (println "REGISTER:" name value)
+  (assoc env :scope (assoc (:scope env) name value)))
+
+(defn- resolve_value [resolve_external env ^String name]
+  ;; (println "RESOLVE:" name env)
+  (cond
+    (.matches name "-?\\d+(\\.\\d+)?") [(Integer/parseInt name) env]
+    (.startsWith name "\"") [(unescape (.substring name 1 (- (.length name) 1))) env]
+    (.startsWith name ":") [(.substring name 1 (.length name)) env]
+    :else (if (contains? (:scope env) name)
+            [(get (:scope env) name) env]
+            (if (contains? (:ns env) name)
+              [(deref (get (:ns env) name)) env]
+              (let [value (resolve_external)]
+                (if (some? value)
+                  [value (register_value env name value)]
+                  (FIXME "Can't resolve '" name "' | SCOPE: " (map (fn [[k]] k) (:scope env)))))))))
 
 (defn- scope_contains [env name]
   ;; (println "SCOPE_CONTAINS:" name env)
@@ -92,58 +106,72 @@
 
 (declare rec_eval)
 
-(defn eval [env lexemes]
+(defn eval [external env lexemes]
   (let [[sexp] (parse lexemes 0)]
-    (rec_eval env sexp)))
+    (rec_eval external env sexp)))
 
-(defn- eval_do_body [env sexps]
+(defn- eval_do_body [external env sexps]
   (let [[node] sexps
         tail (rest sexps)
-        [r env2] (rec_eval env node)]
+        [r env2] (rec_eval external env node)]
     (if (empty? tail)
       [r env2]
-      (eval_do_body env2 tail))))
+      (eval_do_body external env2 tail))))
 
-(defn- eval_arg [env xs]
+(defn- eval_arg [external env xs]
   ;; (println "EVAL_ARG:" xs)
   (if (empty? xs)
     []
     (let [arg (first xs)
-          x (first (rec_eval env arg))]
+          x (first (rec_eval external env arg))]
       ;; (println "arg:" arg)
-      (concat [x] (eval_arg env (rest xs))))))
+      (concat [x] (eval_arg external env (rest xs))))))
 
-(defn- rec_eval [env sexp]
+(defn- rec_eval [external env sexp]
   ;; (println "EVAL:" sexp env)
   (cond
     (= sexp nil) [nil env]
-    (is sexp String) [(resolve_value env (as sexp String)) env]
+    (is sexp String) (resolve_value
+                      (fn []
+                        (let [value_code (cast String ((:interpreter:resolve external) sexp))]
+                          ;; (eprintln "LOG:parse[1]:\n" value_code)
+                          (if (some? value_code)
+                            (let [[value_sexp] (parse (vec (.split value_code "\\n")) 0)]
+                              ;; (eprintln "LOG:parse[2]:" value_sexp)
+                              (let [result (first (rec_eval external env value_sexp))]
+                                ;; (eprintln "LOG:parse[3]:\n" result)
+                                result))
+                            nil)))
+                      env
+                      (as sexp String))
     (vector? sexp) (let [^String name (first sexp)]
                      (case name
-                       "do*" (eval_do_body env (rest sexp))
+                       "do*" (eval_do_body external env (rest sexp))
                        "def*" (let [[_ dname] sexp]
                                 (if (= 3 (count sexp))
                                   (let [value_atom (atom nil)
                                         env2 (register_def env dname value_atom)
-                                        [value] (rec_eval env2 (get sexp 2))]
+                                        [_ _ value_code] sexp
+                                        [value] (rec_eval external env2 value_code)]
+                                    ((:interpreter:save external) dname (serialize_to_string value_code))
                                     (reset! value_atom value)
                                     [true env2])
                                   [(scope_contains env dname) env]))
                        "let*" (let [[_ dname] sexp]
-                                [nil (register_value env dname (first (rec_eval env (get sexp 2))))])
-                       "if*" (let [[cond env2] (rec_eval env (second sexp))]
+                                [nil (register_value env dname (first (rec_eval external env (get sexp 2))))])
+                       "if*" (let [[cond env2] (rec_eval external env (second sexp))]
                               ;; (println "IF:" cond sexp)
                                (if (as cond boolean)
-                                 (rec_eval env2 (get sexp 2))
-                                 (rec_eval env2 (get sexp 3))))
+                                 (rec_eval external env2 (get sexp 2))
+                                 (rec_eval external env2 (get sexp 3))))
                        "fn*" [(fn [args]
                                 (let [[_ args_names body] sexp]
                                   ;; (println "FN*" args_names args env)
                                   (first
-                                   (rec_eval
-                                    (merge_args_with_values env args_names args)
-                                    body))))
+                                   (rec_eval external
+                                             (merge_args_with_values env args_names args)
+                                             body))))
                               env]
-                       (let [f (as (resolve_value env name) Function)]
-                         [(.apply f (eval_arg env (rest sexp))) env])))
+                       (let [f (as (first (rec_eval external env name)) Function)]
+                         [(.apply f (eval_arg external env (rest sexp))) env])))
     :else (FIXME sexp)))

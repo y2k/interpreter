@@ -8,8 +8,10 @@
 
 (defn- test [id expected]
   (let [result (->
-                (make_env)
-                (i/eval (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".bytecode")))))
+                (i/eval
+                 {:interpreter:save (fn [_ _] nil)}
+                 (make_env)
+                 (checked! (Files/readAllLines (Path/of (str "test/samples/out/" id ".bytecode")))))
                 first)
         actual (-> result str)]
     (if (not= actual expected)

@@ -6,7 +6,7 @@
     :root-ns "src"
     :src-dir "src"
     :target-dir ".github/bin/src"
-    :items ["interpreter" "client"]})
+    :items ["interpreter"]})
   (b/module
    {:lang "java"
     :root-ns "test"
