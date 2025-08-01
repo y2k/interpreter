@@ -1,9 +1,8 @@
 OUT_DIR := .github/bin
-# SRC_DIRS := main test
 
-# .PHONY: test
-# test: build
-# 	@ clear && java -cp .github/bin/out test.test
+.PHONY: test
+test: build
+	java -cp .github/bin/out 'interpreter.test$$App'
 
 .PHONY: build
 build:
