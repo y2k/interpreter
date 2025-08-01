@@ -1,16 +1,16 @@
 OUT_DIR := .github/bin
-SRC_DIRS := main test
+# SRC_DIRS := main test
 
-.PHONY: test
-test: build
-	@ clear && java -cp .github/bin/out test.test
+# .PHONY: test
+# test: build
+# 	@ clear && java -cp .github/bin/out test.test
 
 .PHONY: build
 build:
 	@ rm -rf test/samples/out/
 	@ mkdir -p $(OUT_DIR)/y2k
-	@ export OCAMLRUNPARAM=b && clj2js compile gen -target java > $(OUT_DIR)/y2k/RT.java
-	@ export OCAMLRUNPARAM=b && clj2js compile -target repl -src build.clj > $(OUT_DIR)/Makefile
+	@ ly2k generate -target java > $(OUT_DIR)/y2k/RT.java
+	@ ly2k compile -target eval -src build.clj > $(OUT_DIR)/Makefile
 	@ $(MAKE) -f $(OUT_DIR)/Makefile
 	@ cd .github/bin && javac -d out **/*.java
 

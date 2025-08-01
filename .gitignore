@@ -1,5 +1,6 @@
-/.github/bin/
-/.vscode/
-*.generated.*
-*.gen.*
 *.bytecode
+*.gen.*
+*.generated.*
+/.github/bin/
+/.github/vendor/
+/.vscode/

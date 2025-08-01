@@ -23,7 +23,7 @@
   (case (get tokens index)
     "(" (parse_list tokens (+ index 1))
     ")" (FIXME index tokens)
-    [(parse_atom (as (get tokens index) String)) (+ index 1)]))
+    [(parse_atom (cast String (get tokens index))) (+ index 1)]))
 
 (defn- serialize_to_string [sexp]
   ;; (eprintln "LOG:serialize_to_string" sexp)
@@ -45,11 +45,11 @@
    :scope
    (merge
     {:gensym (fn [args]
-               (let [id (swap! gensym_atom (fn [x] (+ (as x int) 1)))]
+               (let [id (swap! gensym_atom (fn [x] (+ (cast int x) 1)))]
                  (str "G__" id)))
      :+ (fn [[a b]]
-          (let [aa (as (if (is a String) (Integer/parseInt (as a String)) a) int)
-                bb (as (if (is b String) (Integer/parseInt (as b String)) b) int)]
+          (let [aa (cast int (if (is a String) (Integer/parseInt (cast String a)) a))
+                bb (cast int (if (is b String) (Integer/parseInt (cast String b)) b))]
             (+ aa bb)))
      := (fn [[a b]] (= a b))
      :get (fn [[xs i]] (get xs i))
@@ -143,7 +143,7 @@
                                 result))
                             nil)))
                       env
-                      (as sexp String))
+                      (cast String sexp))
     (vector? sexp) (let [^String name (first sexp)]
                      (case name
                        "do*" (eval_do_body external env (rest sexp))
@@ -161,7 +161,7 @@
                                 [nil (register_value env dname (first (rec_eval external env (get sexp 2))))])
                        "if*" (let [[cond env2] (rec_eval external env (second sexp))]
                               ;; (println "IF:" cond sexp)
-                               (if (as cond boolean)
+                               (if (cast boolean cond)
                                  (rec_eval external env2 (get sexp 2))
                                  (rec_eval external env2 (get sexp 3))))
                        "fn*" [(fn [args]
@@ -172,6 +172,6 @@
                                              (merge_args_with_values env args_names args)
                                              body))))
                               env]
-                       (let [f (as (first (rec_eval external env name)) Function)]
+                       (let [f (cast Function (first (rec_eval external env name)))]
                          [(.apply f (eval_arg external env (rest sexp))) env])))
     :else (FIXME sexp)))
