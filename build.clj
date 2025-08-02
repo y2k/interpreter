@@ -8,7 +8,11 @@
             {:target "java"
              :root "test"
              :namespace "interpreter"
-             :out-dir ".github/bin/interpreter"}]})
+             :out-dir ".github/bin/interpreter"}
+            {:target "sexp"
+             :root "samples"
+             :namespace "interpreter"
+             :out-dir ".github/bin/samples"}]})
 
 ;; (b/generate
 ;;  [(b/module

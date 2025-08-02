@@ -1,2 +1,0 @@
-(defn eval [_]
-  nil)

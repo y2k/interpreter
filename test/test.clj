@@ -1,24 +1,12 @@
 (ns _ (:import [java.nio.file Files Path]
                [java.util List])
-    (:require ["./interpreter" :as i]))
+    (:require ["./index" :as i]))
 
-;; (defn- make_env []
-;;   (i/make_env
-;;    {}))
-
-;; (defn- test [id expected]
-;;   (let [result (->
-;;                 (i/eval
-;;                  {:interpreter:save (fn [_ _] nil)}
-;;                  (make_env)
-;;                  (Files/readAllLines (Path/of (str "test/samples/out/" id ".bytecode"))))
-;;                 first)
-;;         actual (-> result str)]
-;;     (if (not= actual expected)
-;;       (FIXME "TEST " id ": " expected " <> " actual))))
-
-(gen-class :name App
-           :methods [[^:static main ["String[]"] void]])
+(gen-class :name App :methods [[^:static main ["String[]"] void]])
 
 (defn _main [_]
-  (eprintln "Hello World!"))
+  (let [expected 2
+        code (Files/readAllLines (Path/of (str ".github/bin/samples/sample.sexp")))
+        actual (i/eval code)]
+    (if (not= expected (i/eval code))
+      (FIXME expected " != " actual " in " code))))
