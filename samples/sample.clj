@@ -1,5 +1,5 @@
-;; (defn foo [x] x)
+(defn foo [a x b] x)
 
-;; (foo 2)
+;; (foo 3)
 
-2
+3

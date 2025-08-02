@@ -5,8 +5,8 @@
 (gen-class :name App :methods [[^:static main ["String[]"] void]])
 
 (defn _main [_]
-  (let [expected 2
+  (let [expected "3"
         code (Files/readAllLines (Path/of (str ".github/bin/samples/sample.sexp")))
-        actual (i/eval code)]
-    (if (not= expected (i/eval code))
+        actual (i/eval2 code)]
+    (if (not= expected actual)
       (FIXME expected " != " actual " in " code))))
