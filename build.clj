@@ -1,4 +1,4 @@
-(ns _ (:require [".github/vendor/make/0.3.0/main" :as m]))
+(ns _ (:require ["$LY2K_PACKAGES_DIR/make/0.3.0/main" :as m]))
 
 (m/build
  {:compile
