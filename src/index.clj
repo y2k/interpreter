@@ -31,35 +31,68 @@
       value
       (get (deref (:ns engine)) name))))
 
-;; engine * ctx * lines -> value * ctx
-(defn- interpret [engine ctx lines]
-  (case (first lines)
-    "nil" [nil ctx]
-    "(" (let [fn_name (second lines)]
-          (case fn_name
-            "fn" (let [arg_names (string/split (get lines 2) " ")
-                       body_line_cnt (parse-int (get lines 3))]
-                   (fn [arg_values]
-                     (FIXME)))
-            "let" (let [name (get lines 2)]
-                    [nil (assoc ctx
-                                name
-                                (first (interpret engine ctx (drop 3 lines))))])
-            "do" (FIXME)
-            "if" (let [[cond _] (interpret engine ctx (FIXME))]
-                   (FIXME))
-            (FIXME)))
-    [(resolve_value engine ctx (first lines)) ctx]))
+(defn- zipmap_merge [keys values dic]
+  (if (empty? keys)
+    dic
+    (zipmap_merge
+     (rest keys)
+     (rest values)
+     (assoc dic (first keys) (first values)))))
 
-(defn- read_lines [path]
-  (string/split (slurp path) "\n"))
+(defn- is_string_node [s]
+  ;; (eprintln s) ;; FIXME:
+  (string/starts-with? s "\""))
+
+(defn- is_number_node [s]
+  (re-find (re-pattern "^\\d+$") s))
+
+;; engine * local_scope * lines -> value * local_scope
+(defn- eval [engine ctx sexp]
+  (eprintln "SEXP: " sexp)
+  (if (vector? sexp)
+    (case (first sexp)
+      "fn*" [(fn [arg_values]
+               (let [arg_names (get sexp 1)
+                     ctx2 (zipmap_merge arg_names arg_values ctx)]
+                 (first
+                  (eval engine ctx2 (get sexp 2)))))
+             ctx]
+      "if*" [(let [[cond _] (eval engine ctx (second sexp))]
+               (if cond
+                 (eval engine ctx (get sexp 1))
+                 (eval engine ctx (get sexp 2))))
+             ctx]
+      "do*" (reduce
+             (fn [[_ ctx2] n]
+               (eval engine ctx2 n))
+             nil
+             (rest sexp))
+      "let*" (let [name (get sexp 1)
+                   ctx2 (assoc ctx name (eval engine ctx (get sexp 2)))]
+               [nil ctx2])
+      (let [f (resolve_value engine ctx (first sexp))]
+        (eprintln "F: " f)
+        [(f (map
+             (fn [n] (first (eval engine ctx n)))
+             (rest sexp)))
+         ctx]))
+    (cond
+      (is_string_node sexp) (let [^int len (count sexp)]
+                              [(subs sexp 1 (- len 1)) ctx])
+      (is_number_node sexp) [(parse-int sexp) ctx]
+      :else [(resolve_value engine ctx sexp) ctx])))
+
+(defn- read_all_lines [^String path]
+  ;; (string/split (slurp path) "\n")
+  (java.nio.file.Files.readAllLines (java.nio.file.Path.of path)))
 
 (defn- load_code [engine name]
   (let [path (str (:code_dir engine) "/" name ".bin")]
     (->>
-     (string/split (slurp path) "\n")
+     (read_all_lines path)
      (list_to_tree 0)
-     (interpret engine)
+     (first)
+     (eval engine (:ctx engine))
      (first))))
 
 (defn- resolve_name [engine name]
@@ -75,5 +108,5 @@
           (FIXME "Could not find " name " in " (:code_dir engine)))))))
 
 (defn engine_call [engine name args]
-  (let [value (resolve_name engine name)]
-    (value args)))
+  (let [fun (resolve_name engine name)]
+    (fun args)))
