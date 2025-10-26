@@ -6,15 +6,14 @@
 
 (defn- assert2 [fname args expected]
   (let [ng (i/engine_create {:code_dir "test/data"})
-        __ignore (i/engine_call ng "get1" ["1" "1"]) ;; FIXME
         actual (i/engine_call ng fname args)]
     (if (not= expected actual)
       (FIXME "expected: " expected " actual: " actual))))
 
 (defn _main [_]
-  (assert2 "call_get1" ["1" "2"] "1")
-  (assert2 "get1" ["1" "2"] "1")
-  (assert2 "get2" ["1" "2"] "2")
+  (assert2 "sample.call_get1" ["1" "2"] "1")
+  (assert2 "sample.get1" ["1" "2"] "1")
+  (assert2 "sample.get2" ["1" "2"] "2")
   ;;
   )
 

@@ -18,18 +18,12 @@
 ;;
 ;;
 
-;; { :code_dir "" } -> engine
-(defn engine_create [opts]
-  {:code_dir (:code_dir opts)
-   :ns (atom {})
-   :ctx {"true" true
-         "false" false}})
-
 (defn resolve_value [engine ctx name]
   (let [value (get ctx name)]
     (if (some? value)
       value
-      (get (deref (:ns engine)) name))))
+      ;; (get (deref (:ns engine)) name)
+      ((:resolve_name engine) engine name))))
 
 (defn- zipmap_merge [keys values dic]
   (if (empty? keys)
@@ -48,7 +42,7 @@
 
 ;; engine * local_scope * lines -> value * local_scope
 (defn- eval [engine ctx sexp]
-  (eprintln "SEXP: " sexp)
+  ;; (eprintln "SEXP: " sexp)
   (if (vector? sexp)
     (case (first sexp)
       "fn*" [(fn [arg_values]
@@ -70,8 +64,8 @@
       "let*" (let [name (get sexp 1)
                    ctx2 (assoc ctx name (eval engine ctx (get sexp 2)))]
                [nil ctx2])
-      (let [f (resolve_value engine ctx (first sexp))]
-        (eprintln "F: " f)
+       (let [f (resolve_value engine ctx (first sexp))]
+         ;; (eprintln "F: " f)
         [(f (map
              (fn [n] (first (eval engine ctx n)))
              (rest sexp)))
@@ -110,3 +104,15 @@
 (defn engine_call [engine name args]
   (let [fun (resolve_name engine name)]
     (fun args)))
+
+;;
+;;
+;;
+
+;; { :code_dir "" } -> engine
+(defn engine_create [opts]
+  {:code_dir (:code_dir opts)
+   :ns (atom {})
+   :resolve_name resolve_name
+   :ctx {"true" true
+         "false" false}})

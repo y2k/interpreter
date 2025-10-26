@@ -4,3 +4,4 @@
 /.github/bin/
 /.github/vendor/
 /.vscode/
+*.bin
