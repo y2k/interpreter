@@ -64,7 +64,7 @@
       "let*" (let [name (get sexp 1)
                    ctx2 (assoc ctx name (eval engine ctx (get sexp 2)))]
                [nil ctx2])
-       (let [f (resolve_value engine ctx (first sexp))]
+      (let [f (resolve_value engine ctx (first sexp))]
          ;; (eprintln "F: " f)
         [(f (map
              (fn [n] (first (eval engine ctx n)))
@@ -115,4 +115,5 @@
    :ns (atom {})
    :resolve_name resolve_name
    :ctx {"true" true
-         "false" false}})
+         "false" false
+         "+" (fn [[^int a ^int b]] (+ a b))}})
