@@ -11,7 +11,8 @@
       (FIXME "expected: " expected " actual: " actual))))
 
 (defn _main [_]
-  ;; (assert_ "sample.get_by_pos" [true 1 2] 1)
+  (assert_ "sample.get_by_pos" [true 1 2] 1)
+  (assert_ "sample.get_by_pos" [false 1 2] 2)
   (assert_ "sample.sum" [1 2] 3)
   (assert_ "sample.call_get1" [1 2] 1)
   (assert_ "sample.get1" [1 2] 1)

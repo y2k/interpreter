@@ -51,10 +51,11 @@
                  (first
                   (eval engine ctx2 (get sexp 2)))))
              ctx]
-      "if*" [(let [[cond _] (eval engine ctx (second sexp))]
-               (if cond
-                 (eval engine ctx (get sexp 1))
-                 (eval engine ctx (get sexp 2))))
+      "if*" [(let [[cond _] (eval engine ctx (get sexp 1))]
+               (first
+                (if cond
+                  (eval engine ctx (get sexp 2))
+                  (eval engine ctx (get sexp 3)))))
              ctx]
       "do*" (reduce
              (fn [[_ ctx2] n]
