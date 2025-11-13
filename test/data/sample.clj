@@ -1,5 +1,8 @@
 (ns sample)
 
+(defn sample1 [x] [x [x x] x])
+(defn sample2 [x] {:a x :b {:c x} :d x})
+
 (defn foo [a b]
   (+ a b))
 
@@ -14,3 +17,6 @@
 
 (defn get_by_pos [is_first a b]
   (if is_first a b))
+
+(defn to_string [x]
+  (str x))

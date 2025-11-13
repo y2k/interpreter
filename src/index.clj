@@ -117,4 +117,8 @@
    :resolve_name resolve_name
    :ctx {"true" true
          "false" false
+         "vector" (fn [xs] xs)
+         "hash-map" (fn [key_values]
+                      key_values)
+         "str" (fn [[x]] (str x))
          "+" (fn [[^int a ^int b]] (+ a b))}})
