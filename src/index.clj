@@ -1,3 +1,5 @@
+(ns interpreter)
+
 ;; Version: 0.1.0
 
 (defn- handle_children [list_to_tree ^int i1 nodes]
@@ -119,6 +121,6 @@
          "false" false
          "vector" (fn [xs] xs)
          "hash-map" (fn [key_values]
-                      key_values)
+                      (hash-map-from key_values))
          "str" (fn [[x]] (str x))
          "+" (fn [[^int a ^int b]] (+ a b))}})

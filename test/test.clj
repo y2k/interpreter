@@ -1,5 +1,5 @@
-(ns _ (:import [java.nio.file Files Path]
-               [java.util List])
+(ns test (:import [java.nio.file Files Path]
+                  [java.util List])
     (:require ["./index" :as i]))
 
 (gen-class :name App :methods [[^:static main ["String[]"] void]])
