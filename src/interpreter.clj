@@ -1,6 +1,6 @@
 (ns interpreter)
 
-;; Version: 0.1.0
+;; Version: 0.5.0
 
 (defn- handle_children [list_to_tree ^int i1 nodes]
   (let [[n1 ^int i2] (list_to_tree i1 nodes)]

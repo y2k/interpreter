@@ -1,11 +1,15 @@
 OUT_DIR := .github/bin
 
+.PHONE: release
+release: test
+	@ cp src/interpreter.clj $(LY2K_PACKAGES_DIR)/interpreter/0.5.0
+
 .PHONY: test
 test: build
-	@ cd test/data && \
+	@ cd data && \
 		rm -f *.bin && \
 		ly2k -target sexp -src sample.clj | awk 'BEGIN { RS = "\n=======\n" } NR % 2 == 1 { name = $$0 } NR % 2 == 0 { outfile = name ".bin"; print $$0 > outfile; close(outfile) }'
-	@ java -cp .github/bin/out 'interpreter.test$$App'
+	@ java -cp $(OUT_DIR)/out 'y2k.interpreter_test$$App'
 
 .PHONY: build
 build:
@@ -14,7 +18,7 @@ build:
 	@ ly2k generate -target java > $(OUT_DIR)/y2k/RT.java
 	@ ly2k compile -target eval -src build.clj > $(OUT_DIR)/Makefile
 	@ $(MAKE) -f $(OUT_DIR)/Makefile
-	@ clear && cd .github/bin && javac -d out **/*.java
+	@ cd .github/bin && javac -d out **/*.java
 
 .PHONY: clean
 clean:

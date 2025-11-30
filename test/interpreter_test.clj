@@ -1,11 +1,12 @@
-(ns test (:import [java.nio.file Files Path]
-                  [java.util List])
-    (:require ["./index" :as i]))
+(ns interpreter-test
+  (:require [interpreter :as i])
+  (:import [java.nio.file Files Path]
+           [java.util List]))
 
 (gen-class :name App :methods [[^:static main ["String[]"] void]])
 
 (defn- assert_ [fname args expected]
-  (let [ng (i/engine_create {:code_dir "test/data"})
+  (let [ng (i/engine_create {:code_dir "data"})
         actual (i/engine_call ng fname args)]
     (if (not= expected actual)
       (FIXME "expected: " expected " actual: " actual))))

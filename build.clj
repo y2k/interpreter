@@ -1,16 +1,18 @@
-(ns _ (:require ["$LY2K_PACKAGES_DIR/make/0.3.0/main" :as m]))
+(ns build (:require ["$LY2K_PACKAGES_DIR/make/0.5.0/make" :as m]))
 
 (m/build
- {:compile
+ {:rules
   [{:target "java"
     :root "src"
-    :namespace "interpreter"
-    :out-dir ".github/bin/interpreter"}
+    :namespace "y2k"
+    :out-dir ".github/bin/y2k"}
    {:target "java"
     :root "test"
-    :namespace "interpreter"
-    :out-dir ".github/bin/interpreter"}
-   {:target "sexp"
-    :root "samples"
-    :namespace "interpreter"
-    :out-dir ".github/bin/samples"}]})
+    ;; :log true
+    :namespace "y2k"
+    :out-dir ".github/bin/y2k"}
+  ;;  {:target "sexp"
+  ;;   :root "samples"
+  ;;   :namespace "interpreter"
+  ;;   :out-dir ".github/bin/samples"}
+   ]})
