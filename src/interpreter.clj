@@ -2,17 +2,17 @@
 
 ;; Version: 0.5.0
 
-(defn- handle_children [list_to_tree ^int i1 nodes]
+(defn- handle_children [^int i1 nodes]
   (let [[n1 ^int i2] (list_to_tree i1 nodes)]
     (if (= n1 nil)
       [[] i2]
-      (let [[n2 i3] (handle_children list_to_tree i2 nodes)]
+      (let [[n2 i3] (handle_children i2 nodes)]
         [(concat [n1] n2) i3]))))
 
 (defn- list_to_tree [^int i nodes]
   (let [hd (get nodes i)]
     (cond
-      (= hd "(") (handle_children list_to_tree (+ i 1) nodes)
+      (= hd "(") (handle_children (+ i 1) nodes)
       (= hd ")") [nil (+ i 1)]
       :else [hd (+ i 1)])))
 
@@ -69,9 +69,9 @@
                [nil ctx2])
       (let [f (resolve_value engine ctx (first sexp))]
          ;; (eprintln "F: " f)
-        [(f (map
-             (fn [n] (first (eval engine ctx n)))
-             (rest sexp)))
+        [(apply f [(map
+                    (fn [n] (first (eval engine ctx n)))
+                    (rest sexp))])
          ctx]))
     (cond
       (is_string_node sexp) (let [^int len (count sexp)]
@@ -106,7 +106,7 @@
 
 (defn engine_call [engine name args]
   (let [fun (resolve_name engine name)]
-    (fun args)))
+    (apply fun [args])))
 
 ;;
 ;;
@@ -116,7 +116,7 @@
 (defn engine_create [opts]
   {:code_dir (:code_dir opts)
    :ns (atom {})
-   :resolve_name resolve_name
+   :resolve_name (fn [engine name] (resolve_name engine name))
    :ctx {"true" true
          "false" false
          "vector" (fn [xs] xs)

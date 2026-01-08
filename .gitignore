@@ -1,7 +1,8 @@
+*.bin
 *.bytecode
 *.gen.*
 *.generated.*
 /.github/bin/
 /.github/vendor/
 /.vscode/
-*.bin
+/AGENTS.md

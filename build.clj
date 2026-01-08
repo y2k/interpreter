@@ -2,14 +2,16 @@
 
 (m/build
  {:rules
-  [{:target "java"
+  [{:target "java_v2"
     :root "src"
     :namespace "y2k"
+    :extension "java"
     :out-dir ".github/bin/y2k"}
-   {:target "java"
+   {:target "java_v2"
     :root "test"
     ;; :log true
     :namespace "y2k"
+    :extension "java"
     :out-dir ".github/bin/y2k"}
   ;;  {:target "sexp"
   ;;   :root "samples"
