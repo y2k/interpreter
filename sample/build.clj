@@ -2,7 +2,11 @@
 
 (m/build
  {:rules
-  [{:target "java_v2"
+  [{:target "sexp"
+    :root "remote"
+    :extension "txt"
+    :out-dir "bin/remote"}
+   {:target "java_v2"
     :root "src"
     :namespace "io.github.y2k"
     :extension "java"

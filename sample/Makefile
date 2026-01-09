@@ -24,4 +24,5 @@ build_apk: build
 
 .PHONY: clean
 clean:
+	@ rm -rf $(OUT_DIR)/remote
 	@ rm -rf $(OUT_DIR)/android/app/src/main/java
