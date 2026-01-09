@@ -18,7 +18,7 @@ build:
 	@ ly2k generate -target java > $(OUT_DIR)/y2k/RT.java
 	@ ly2k compile -target eval -src build.clj > $(OUT_DIR)/Makefile
 	@ $(MAKE) -f $(OUT_DIR)/Makefile
-	@ cd .github/bin && javac -d out **/*.java
+	@ cd $(OUT_DIR) && javac -d out **/*.java
 
 .PHONY: clean
 clean:

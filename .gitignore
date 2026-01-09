@@ -6,3 +6,4 @@
 /.github/vendor/
 /.vscode/
 /AGENTS.md
+bin/
