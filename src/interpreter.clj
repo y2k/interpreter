@@ -25,7 +25,7 @@
     (if (some? value)
       value
       ;; (get (deref (:ns engine)) name)
-      ((:resolve_name engine) engine name))))
+      (resolve_name engine name))))
 
 (defn- zipmap_merge [keys values dic]
   (if (empty? keys)
@@ -115,12 +115,11 @@
 ;; { :code_dir "" } -> engine
 (defn engine_create [opts]
   {:code_dir (:code_dir opts)
-   :ns (atom {})
-   :resolve_name (fn [engine name] (resolve_name engine name))
+   :ns (atom {"str" (fn [[x]] (str x))})
    :ctx {"true" true
          "false" false
          "vector" (fn [xs] xs)
          "hash-map" (fn [key_values]
                       (hash-map-from key_values))
-         "str" (fn [[x]] (str x))
+        ;;  "str" (fn [[x]] (str x))
          "+" (fn [[^int a ^int b]] (+ a b))}})
