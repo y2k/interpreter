@@ -115,11 +115,11 @@
 ;; { :code_dir "" } -> engine
 (defn engine_create [opts]
   {:code_dir (:code_dir opts)
-   :ns (atom {"str" (fn [[x]] (str x))})
-   :ctx {"true" true
-         "false" false
-         "vector" (fn [xs] xs)
-         "hash-map" (fn [key_values]
-                      (hash-map-from key_values))
-        ;;  "str" (fn [[x]] (str x))
-         "+" (fn [[^int a ^int b]] (+ a b))}})
+   :ns (atom {"str" (fn [[x]] (str x))
+              "true" true
+              "false" false
+              "vector" (fn [xs] xs)
+              "hash-map" (fn [key_values]
+                           (hash-map-from key_values))
+              "+" (fn [[^int a ^int b]] (+ a b))})
+   :ctx {}})
