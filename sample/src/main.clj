@@ -4,7 +4,8 @@
            [android.content Intent]
            [android.view View]
            [android.widget TextView]
-           [android.os Bundle]))
+           [android.os Bundle]
+           [java.nio.file Files Path]))
 
 (gen-class
  :name MainActivity
@@ -17,8 +18,8 @@
 
 (defn- _onCreate [^MainActivity self _]
   (let [view (TextView. self)
-        engine (i/engine_create {:code_dir (str (.getFilesDir self))})
-        result (i/engine_call engine "str" [1])]
+        engine (i/engine_create {:code_dir (str (.getExternalFilesDir self nil))})
+        result (i/engine_call engine "main.main" [0])]
     (.setText view (str "\n" result))
     (.setContentView self view))
   nil)

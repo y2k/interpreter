@@ -1,3 +1,15 @@
 (ns main)
 
-(defn foo [a b] a)
+(def- WORDS
+  [["Hello" "Привет"]
+   ["World" "Мир"]])
+
+(defn- foo [x] x)
+
+(defn main [event]
+  [:column
+   "Hello"
+   [:row
+    [:button "Привет"]
+    [:button "Мир"]
+    [:button "Дом"]]])

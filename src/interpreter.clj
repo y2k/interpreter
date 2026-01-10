@@ -84,7 +84,7 @@
   (java.nio.file.Files.readAllLines (java.nio.file.Path.of path)))
 
 (defn- load_code [engine name]
-  (let [path (str (:code_dir engine) "/" name ".bin")]
+  (let [path (str (:code_dir engine) "/" name ".txt")]
     (->>
      (read_all_lines path)
      (list_to_tree 0)
