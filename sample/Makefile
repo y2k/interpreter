@@ -9,6 +9,8 @@ hot-reload: build
 .PHONY: run
 run: build_apk
 	@ adb install -r $(OUT_DIR)/android/app/build/outputs/apk/debug/app-debug.apk
+	@ adb shell "mkdir -p /sdcard/Android/data/im.y2k.fixme/files"
+	@ cd bin/remote && adb push --sync *.txt /sdcard/Android/data/im.y2k.fixme/files
 	@ adb shell am start -S -n im.y2k.fixme/io.github.y2k.main\\\$$MainActivity
 
 .PHONY: build
