@@ -44,7 +44,7 @@
 (defn- render-button [^Context ctx ui-tree state-atom]
   (let [opts (second ui-tree)
         ^String label (get ui-tree 2)
-        action (:action opts)
+        action (get opts "action")
         btn (Button. ctx)]
     (.setText btn label)
     (.setOnClickListener
@@ -54,7 +54,7 @@
          (let [state (deref state-atom)
                engine (:engine state)
                ^ViewGroup container (:container state)
-               ui-tree (i/engine-call engine "remote.main" [action])
+                ui-tree (i/engine_call engine "remote.main" [action])
                ^View root-view (render-ui ctx ui-tree state-atom)]
            (.addView container root-view)))))
     btn))
@@ -70,9 +70,9 @@
     (render-text ctx ui-tree)
     (let [tag (first ui-tree)]
       (cond
-        (= tag :column) (render-column ctx ui-tree state-atom)
-        (= tag :row) (render-row ctx ui-tree state-atom)
-        (= tag :button) (render-button ctx ui-tree state-atom)
+        (= tag "column") (render-column ctx ui-tree state-atom)
+        (= tag "row") (render-row ctx ui-tree state-atom)
+        (= tag "button") (render-button ctx ui-tree state-atom)
         :else (render-text ctx (str "Unknown: " tag))))))
 
 (defn- refresh-ui [state-atom]
@@ -80,7 +80,7 @@
         engine (:engine state)
         ^ViewGroup container (:container state)
         ^Context self (:self state)
-        ui-tree (i/engine-call engine "remote.main" ["home"])
+        ui-tree (i/engine_call engine "remote.main" ["home"])
         ^View root-view (render-ui self ui-tree state-atom)]
     (.addView container root-view)
     nil))
@@ -102,7 +102,7 @@
 
 (defn- _onCreate [^MainActivity self _]
   (let [state-atom (.-state self)
-        engine (i/engine-create {:code-dir (str (.getExternalFilesDir self nil))})
+        engine (i/engine_create {:code_dir (str (.getExternalFilesDir self nil))})
         scroll-view (ScrollView. self)
         content-layout (LinearLayout. self)]
 

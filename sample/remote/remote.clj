@@ -4,12 +4,16 @@
   [["Hello" "Привет"]
    ["World" "Мир"]])
 
-(defn- foo [x] x)
-
 (defn main [event]
-  [:column
-   (str "Hello [" event "]")
-   [:row
-    [:button {:action :click-hello} "Привет"]
-    [:button {:action :click-world} "Мир"]
-    [:button {:action :click-home}  "Дом"]]])
+  (case event
+    :click-hello
+    [:column
+     (str "Hello [" event "]")
+     [:button {:action :click-home}  "Дом"]]
+
+    [:column
+     (str "Home [" event "]")
+     [:row
+      [:button {:action :click-hello} "Привет"]
+      [:button {:action :click-world} "Мир"]
+      [:button {:action :click-home}  "Дом"]]]))

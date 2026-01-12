@@ -62,7 +62,7 @@
       "do*" (reduce
              (fn [[_ ctx2] n]
                (eval engine ctx2 n))
-             nil
+             [nil ctx]
              (rest sexp))
       "let*" (let [name (get sexp 1)
                    ctx2 (assoc ctx name (eval engine ctx (get sexp 2)))]
@@ -121,5 +121,6 @@
               "vector" (fn [xs] xs)
               "hash-map" (fn [key_values]
                            (hash-map-from key_values))
-              "+" (fn [[^int a ^int b]] (+ a b))})
+              "+" (fn [[^int a ^int b]] (+ a b))
+              "=" (fn [[a b]] (= a b))})
    :ctx {}})
