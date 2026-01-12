@@ -21,5 +21,8 @@
   (assert_ "sample.call_get1" [1 2] 1)
   (assert_ "sample.get1" [1 2] 1)
   (assert_ "sample.get2" [1 2] 2)
+  (assert_ "sample.test_case" [1] "one")
+  (assert_ "sample.test_case" [2] "two")
+  (assert_ "sample.test_case" [3] "default")
   ;;
   )

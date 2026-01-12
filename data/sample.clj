@@ -20,3 +20,9 @@
 
 (defn to_string [x]
   (str x))
+
+(defn test_case [x]
+  (case x
+    1 "one"
+    2 "two"
+    "default"))
