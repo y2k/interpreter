@@ -62,7 +62,7 @@
 (defn- render-text [^Context ctx ^String text]
   (let [tv (TextView. ctx)]
     (.setText tv text)
-    (.setTextSize tv 24)
+    (.setTextSize tv 24f)
     tv))
 
 (defn- ^View render-ui [^Context ctx ui-tree state-atom]

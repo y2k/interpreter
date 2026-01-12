@@ -8,7 +8,7 @@
 
 (defn main [event]
   [:column
-   "Hello"
+   (str "Hello [" event "]")
    [:row
     [:button {:action :click-hello} "Привет"]
     [:button {:action :click-world} "Мир"]
