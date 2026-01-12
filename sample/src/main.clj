@@ -3,7 +3,7 @@
   (:import [android.app Activity]
            [android.content Intent Context]
            [android.view View ViewGroup WindowInsets]
-           [android.widget TextView Button LinearLayout]
+           [android.widget TextView Button LinearLayout ScrollView]
            [android.os Bundle]
            [java.nio.file Files Path]))
 
@@ -52,9 +52,11 @@
      (reify android.view.View$OnClickListener
        (^void onClick [_ ^android.view.View v]
          (let [state (deref state-atom)
-               engine (:engine state)]
-           (i/engine-call engine "remote.main" [action])
-           (refresh-ui state-atom)))))
+               engine (:engine state)
+               ^ViewGroup container (:container state)
+               ui-tree (i/engine-call engine "remote.main" [action])
+               ^View root-view (render-ui ctx ui-tree state-atom)]
+           (.addView container root-view)))))
     btn))
 
 (defn- render-text [^Context ctx ^String text]
@@ -101,13 +103,15 @@
 (defn- _onCreate [^MainActivity self _]
   (let [state-atom (.-state self)
         engine (i/engine-create {:code-dir (str (.getExternalFilesDir self nil))})
-        main-layout (LinearLayout. self)]
+        scroll-view (ScrollView. self)
+        content-layout (LinearLayout. self)]
 
-    (.setOrientation main-layout 1)
-    (.setBackgroundColor main-layout -15198182)
-    (swap! state-atom (fn [s] (assoc (assoc (assoc s :engine engine) :container main-layout) :self self)))
+    (.setOrientation content-layout 1)
+    (.addView scroll-view content-layout)
+    (.setBackgroundColor scroll-view -15198182)
+    (swap! state-atom (fn [s] (assoc (assoc (assoc s :engine engine) :container content-layout) :self self)))
 
-    (apply-insets main-layout)
+    (apply-insets scroll-view)
     (refresh-ui state-atom)
-    (.setContentView self main-layout))
+    (.setContentView self scroll-view))
   nil)
