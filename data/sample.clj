@@ -1,28 +1,25 @@
 (ns sample)
 
-(defn sample1 [x] [x [x x] x])
-(defn sample2 [x] {:a x :b {:c x} :d x})
+(defn test_vector [x]
+  [x [x x] x])
 
-(defn foo [a b]
+(defn test_hashmap [x]
+  {:a x :b {:c x}})
+
+(defn test_add [a b]
   (+ a b))
 
-(defn bar [x]
-  (foo x x))
-
-(defn get1 [a b] a)
-(defn get2 [a b] b)
-(defn call_get1 [a b] (get1 a b))
-
-(defn sum [a b] (+ a b))
-
-(defn get_by_pos [is_first a b]
-  (if is_first a b))
-
-(defn to_string [x]
-  (str x))
+(defn test_if [cond a b]
+  (if cond a b))
 
 (defn test_case [x]
   (case x
     1 "one"
     2 "two"
     "default"))
+
+(defn test_str [x]
+  (str x))
+
+(defn test_call [a b]
+  (test_add a b))

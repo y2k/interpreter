@@ -1,7 +1,5 @@
 (ns interpreter-test
-  (:require [interpreter :as i])
-  (:import [java.nio.file Files Path]
-           [java.util List]))
+  (:require [interpreter :as i]))
 
 (gen-class :name App :methods [[^:static main ["String[]"] void]])
 
@@ -12,17 +10,18 @@
       (FIXME "expected: " expected " actual: " actual))))
 
 (defn _main [_]
-  (assert_ "sample.sample2" [1] {:a 1 :b {:c 1} :d 1})
-  (assert_ "sample.sample1" [1] [1 [1 1] 1])
-  (assert_ "sample.to_string" [1] "1")
-  (assert_ "sample.get_by_pos" [true 1 2] 1)
-  (assert_ "sample.get_by_pos" [false 1 2] 2)
-  (assert_ "sample.sum" [1 2] 3)
-  (assert_ "sample.call_get1" [1 2] 1)
-  (assert_ "sample.get1" [1 2] 1)
-  (assert_ "sample.get2" [1 2] 2)
+  ;; data structures
+  (assert_ "sample.test_vector" [1] [1 [1 1] 1])
+  (assert_ "sample.test_hashmap" [1] {:a 1 :b {:c 1}})
+  ;; arithmetic
+  (assert_ "sample.test_add" [1 2] 3)
+  ;; control flow
+  (assert_ "sample.test_if" [true 1 2] 1)
+  (assert_ "sample.test_if" [false 1 2] 2)
   (assert_ "sample.test_case" [1] "one")
   (assert_ "sample.test_case" [2] "two")
   (assert_ "sample.test_case" [3] "default")
-  ;;
-  )
+  ;; str
+  (assert_ "sample.test_str" [1] "1")
+  ;; function calls
+  (assert_ "sample.test_call" [1 2] 3))
