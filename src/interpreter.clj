@@ -114,8 +114,8 @@
               "true" true
               "false" false
               "vector" (fn [xs] xs)
-              "hash-map" (fn [key-values]
+              "hash_map" (fn [key-values]
                            (hash-map-from key-values))
-              "+" (fn [[^int a ^int b]] (+ a b))
+              "_PLUS_" (fn [[^int a ^int b]] (+ a b))
               "=" (fn [[a b]] (= a b))})
    :ctx {}})

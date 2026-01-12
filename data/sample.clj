@@ -1,21 +1,21 @@
 (ns sample)
 
 ;; data structures
-(defn test_vector [_]
+(defn test-vector [_]
   (= [1 [1 1] 1] [1 [1 1] 1]))
 
-(defn test_hashmap [_]
+(defn test-hashmap [_]
   (= {:a 1 :b {:c 1}} {:a 1 :b {:c 1}}))
 
 ;; arithmetic
-(defn test_add [_]
+(defn test-add [_]
   (= 3 (+ 1 2)))
 
 ;; control flow
-(defn test_if [_]
+(defn test-if [_]
   (= [1 2] [(if true 1 2) (if false 1 2)]))
 
-(defn test_case [_]
+(defn test-case [_]
   (let [f (fn [x]
             (case x
               1 "one"
@@ -24,12 +24,12 @@
     (= ["one" "two" "default"] [(f 1) (f 2) (f 3)])))
 
 ;; str
-(defn test_str [_]
+(defn test-str [_]
   (= "1" (str 1)))
 
 ;; function calls
-(defn- helper [a b]
+(defn- helper-fun [a b]
   (+ a b))
 
-(defn test_call [_]
-  (= 3 (helper 1 2)))
+(defn test-call [_]
+  (= 3 (helper-fun 1 2)))

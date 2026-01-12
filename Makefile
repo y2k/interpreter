@@ -22,5 +22,6 @@ build:
 
 .PHONY: clean
 clean:
-	@ rm -rf test/samples/out/
+# 	@ rm -rf test/samples/out/
 	@ rm -rf $(OUT_DIR)
+	@ rm -rf data/*.txt
