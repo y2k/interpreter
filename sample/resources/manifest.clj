@@ -5,7 +5,7 @@
   [:application {:android:icon "@drawable/ic_launcher"
                  :android:label "Interpreter"
                  :android:roundIcon "@drawable/ic_launcher"
-                 :android:theme "@style/Theme.Default"}
+                 :android:theme "@android:style/Theme.Material.NoActionBar"}
    [:activity {:android:name "io.github.y2k.main$MainActivity"
                :android:configChanges "orientation|screenSize"
                :android:exported "true"}

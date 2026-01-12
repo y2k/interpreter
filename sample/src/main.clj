@@ -104,6 +104,7 @@
         main-layout (LinearLayout. self)]
 
     (.setOrientation main-layout 1)
+    (.setBackgroundColor main-layout -15198182)
     (swap! state-atom (fn [s] (assoc (assoc (assoc s :engine engine) :container main-layout) :self self)))
 
     (apply-insets main-layout)
