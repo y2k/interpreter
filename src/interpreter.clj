@@ -2,17 +2,17 @@
 
 ;; Version: 0.5.0
 
-(defn- handle_children [^int i1 nodes]
-  (let [[n1 ^int i2] (list_to_tree i1 nodes)]
+(defn- handle-children [^int i1 nodes]
+  (let [[n1 ^int i2] (list-to-tree i1 nodes)]
     (if (= n1 nil)
       [[] i2]
-      (let [[n2 i3] (handle_children i2 nodes)]
+      (let [[n2 i3] (handle-children i2 nodes)]
         [(concat [n1] n2) i3]))))
 
-(defn- list_to_tree [^int i nodes]
+(defn- list-to-tree [^int i nodes]
   (let [hd (get nodes i)]
     (cond
-      (= hd "(") (handle_children (+ i 1) nodes)
+      (= hd "(") (handle-children (+ i 1) nodes)
       (= hd ")") [nil (+ i 1)]
       :else [hd (+ i 1)])))
 
@@ -20,107 +20,102 @@
 ;;
 ;;
 
-(defn resolve_value [engine ctx name]
+(defn resolve-value [engine ctx name]
   (let [value (get ctx name)]
     (if (some? value)
       value
-      ;; (get (deref (:ns engine)) name)
-      (resolve_name engine name))))
+      (resolve-name engine name))))
 
-(defn- zipmap_merge [keys values dic]
+(defn- zipmap-merge [keys values dic]
   (if (empty? keys)
     dic
-    (zipmap_merge
+    (zipmap-merge
      (rest keys)
      (rest values)
      (assoc dic (first keys) (first values)))))
 
-(defn- is_string_node [s]
-  ;; (eprintln s) ;; FIXME:
+(defn- string-node? [s]
   (string/starts-with? s "\""))
 
-(defn- is_number_node [s]
+(defn- number-node? [s]
   (re-find (re-pattern "^\\d+$") s))
 
-;; engine * local_scope * lines -> value * local_scope
-(defn- eval [engine ctx sexp]
-  ;; (eprintln "SEXP: " sexp)
+;; engine * local-scope * lines -> value * local-scope
+(defn- eval- [engine ctx sexp]
   (if (vector? sexp)
     (case (first sexp)
-      "fn*" [(fn [arg_values]
-               (let [arg_names (get sexp 1)
-                     ctx2 (zipmap_merge arg_names arg_values ctx)]
+      "fn*" [(fn [arg-values]
+               (let [arg-names (get sexp 1)
+                     ctx2 (zipmap-merge arg-names arg-values ctx)]
                  (first
-                  (eval engine ctx2 (get sexp 2)))))
+                  (eval- engine ctx2 (get sexp 2)))))
              ctx]
-      "if*" [(let [[cond _] (eval engine ctx (get sexp 1))]
+      "if*" [(let [[cond _] (eval- engine ctx (get sexp 1))]
                (first
                 (if cond
-                  (eval engine ctx (get sexp 2))
-                  (eval engine ctx (get sexp 3)))))
+                  (eval- engine ctx (get sexp 2))
+                  (eval- engine ctx (get sexp 3)))))
              ctx]
       "do*" (reduce
              (fn [[_ ctx2] n]
-               (eval engine ctx2 n))
+               (eval- engine ctx2 n))
              [nil ctx]
              (rest sexp))
       "let*" (let [name (get sexp 1)
-                   ctx2 (assoc ctx name (first (eval engine ctx (get sexp 2))))]
+                   ctx2 (assoc ctx name (first (eval- engine ctx (get sexp 2))))]
                [nil ctx2])
-      (let [f (resolve_value engine ctx (first sexp))]
-         ;; (eprintln "F: " f)
+      (let [f (resolve-value engine ctx (first sexp))]
         [(apply f [(map
-                    (fn [n] (first (eval engine ctx n)))
+                    (fn [n] (first (eval- engine ctx n)))
                     (rest sexp))])
          ctx]))
     (cond
-      (is_string_node sexp) (let [^int len (count sexp)]
-                              [(subs sexp 1 (- len 1)) ctx])
-      (is_number_node sexp) [(parse-int sexp) ctx]
-      :else [(resolve_value engine ctx sexp) ctx])))
+      (string-node? sexp) (let [^int len (count sexp)]
+                            [(subs sexp 1 (- len 1)) ctx])
+      (number-node? sexp) [(parse-int sexp) ctx]
+      :else [(resolve-value engine ctx sexp) ctx])))
 
-(defn- read_all_lines [^String path]
-  ;; (string/split (slurp path) "\n")
+(defn- read-all-lines [^String path]
   (java.nio.file.Files.readAllLines (java.nio.file.Path.of path)))
 
-(defn- load_code [engine name]
-  (let [path (str (:code_dir engine) "/" name ".txt")]
+(defn- load-code [engine name]
+  (let [path (str (:code-dir engine) "/" name ".txt")]
     (->>
-     (read_all_lines path)
-     (list_to_tree 0)
+     (read-all-lines path)
+     (list-to-tree 0)
      (first)
-     (eval engine (:ctx engine))
+     (eval- engine (:ctx engine))
      (first))))
 
-(defn- resolve_name [engine name]
+(defn- resolve-name [engine name]
   (let [ns (deref (:ns engine))
         value (get ns name)]
     (if (some? value)
       value
-      (let [value2 (load_code engine name)]
+      (let [value2 (load-code engine name)]
         (if (some? value2)
           (do
             (reset! (:ns engine) (assoc ns name value2))
             value2)
-          (FIXME "Could not find " name " in " (:code_dir engine)))))))
+          (FIXME "Could not find " name " in " (:code-dir engine)))))))
 
-(defn engine_call [engine name args]
-  (let [fun (resolve_name engine name)]
+(defn engine-call [engine name args]
+  (let [fun (resolve-name engine name)]
     (apply fun [args])))
 
 ;;
 ;;
 ;;
 
-;; { :code_dir "" } -> engine
-(defn engine_create [opts]
-  {:code_dir (:code_dir opts)
+;; { :code-dir "" } -> engine
+(defn engine-create [opts]
+  {:code-dir (:code-dir opts)
    :ns (atom {"str" (fn [xs] (string/join "" (map (fn [x] (str x)) xs)))
               "true" true
               "false" false
               "vector" (fn [xs] xs)
-              "hash-map" (fn [key_values]
-                           (hash-map-from key_values))
+              "hash-map" (fn [key-values]
+                           (hash-map-from key-values))
               "+" (fn [[^int a ^int b]] (+ a b))
               "=" (fn [[a b]] (= a b))})
    :ctx {}})
