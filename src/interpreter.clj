@@ -115,7 +115,7 @@
 ;; { :code_dir "" } -> engine
 (defn engine_create [opts]
   {:code_dir (:code_dir opts)
-   :ns (atom {"str" (fn [[x]] (str x))
+   :ns (atom {"str" (fn [xs] (string/join "" (map (fn [x] (str x)) xs)))
               "true" true
               "false" false
               "vector" (fn [xs] xs)

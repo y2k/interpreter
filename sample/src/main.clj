@@ -60,6 +60,7 @@
 (defn- render-text [^Context ctx ^String text]
   (let [tv (TextView. ctx)]
     (.setText tv text)
+    (.setTextSize tv 24)
     tv))
 
 (defn- ^View render-ui [^Context ctx ui-tree state-atom]
@@ -77,9 +78,8 @@
         engine (:engine state)
         ^ViewGroup container (:container state)
         ^Context self (:self state)
-        ui-tree (i/engine-call engine "remote.main" [0])
+        ui-tree (i/engine-call engine "remote.main" ["home"])
         ^View root-view (render-ui self ui-tree state-atom)]
-    (.removeAllViews container)
     (.addView container root-view)
     nil))
 
