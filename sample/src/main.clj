@@ -2,7 +2,7 @@
   (:require [interpreter :as i])
   (:import [android.app Activity]
            [android.content Intent Context]
-           [android.view View ViewGroup]
+           [android.view View ViewGroup WindowInsets]
            [android.widget TextView Button LinearLayout]
            [android.os Bundle]
            [java.nio.file Files Path]))
@@ -83,14 +83,20 @@
     (.addView container root-view)
     nil))
 
-(defn- apply-insets [^View view ^Activity activity]
-  (let [^android.content.res.Resources res (.getResources activity)
-        ^int status-bar-id (.getIdentifier res "status_bar_height" "dimen" "android")
-        ^int nav-bar-id (.getIdentifier res "navigation_bar_height" "dimen" "android")
-        ^int status-height (if (> status-bar-id 0) (.getDimensionPixelSize res status-bar-id) 0)
-        ^int nav-height (if (> nav-bar-id 0) (.getDimensionPixelSize res nav-bar-id) 0)]
-    (.setPadding view 0 status-height 0 nav-height)
-    nil))
+(defn- apply-insets [^View view]
+  (.setOnApplyWindowInsetsListener
+   view
+   (reify android.view.View$OnApplyWindowInsetsListener
+     (^android.view.WindowInsets onApplyWindowInsets [_ ^android.view.View the-view ^android.view.WindowInsets the-insets]
+       (let [^int type-mask (WindowInsets/Type.systemBars)
+             ^android.graphics.Insets system-bars (.getInsetsIgnoringVisibility the-insets type-mask)
+             ^int left (.-left system-bars)
+             ^int top (.-top system-bars)
+             ^int right (.-right system-bars)
+             ^int bottom (.-bottom system-bars)]
+         (.setPadding the-view left top right bottom)
+         the-insets))))
+  nil)
 
 (defn- _onCreate [^MainActivity self _]
   (let [state-atom (.-state self)
@@ -100,7 +106,7 @@
     (.setOrientation main-layout 1)
     (swap! state-atom (fn [s] (assoc (assoc (assoc s :engine engine) :container main-layout) :self self)))
 
-    (apply-insets main-layout self)
+    (apply-insets main-layout)
     (refresh-ui state-atom)
     (.setContentView self main-layout))
   nil)
