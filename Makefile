@@ -7,8 +7,8 @@ release: test
 .PHONY: test
 test: build
 	@ cd data && \
-		rm -f *.bin && \
-		ly2k -target sexp -src sample.clj | awk 'BEGIN { RS = "\n=======\n" } NR % 2 == 1 { name = $$0 } NR % 2 == 0 { outfile = name ".bin"; print $$0 > outfile; close(outfile) }'
+		rm -f *.txt && \
+		ly2k -target sexp -src sample.clj -output .
 	@ java -cp $(OUT_DIR)/out 'y2k.interpreter_test$$App'
 
 .PHONY: build
