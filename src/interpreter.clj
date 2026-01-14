@@ -116,6 +116,10 @@
               "hash_map" (fn [key-values]
                            (hash-map-from key-values))
               "get" (fn [[m k]] (get m k))
+              "map" (fn [[f coll]] (map (fn [x] (apply f [[x]])) coll))
+              "filter" (fn [[f coll]] (filter (fn [x] (apply f [[x]])) coll))
+              "reduce" (fn [[f init coll]] (reduce (fn [acc x] (apply f [[acc x]])) init coll))
+              "mod" (fn [[^int a ^int b]] (mod a b))
               "_PLUS_" (fn [[^int a ^int b]] (+ a b))
               "=" (fn [[a b]] (= a b))})
    :ctx {}})

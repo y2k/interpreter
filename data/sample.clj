@@ -33,3 +33,13 @@
 
 (defn test-call [_]
   (= 3 (helper-fun 1 2)))
+
+;; higher-order functions
+(defn test-map [_]
+  (= [2 4 6] (map (fn [x] (+ x x)) [1 2 3])))
+
+(defn test-filter [_]
+  (= [2 4] (filter (fn [x] (= 0 (mod x 2))) [1 2 3 4 5])))
+
+(defn test-reduce [_]
+  (= 10 (reduce (fn [acc x] (+ acc x)) 0 [1 2 3 4])))
