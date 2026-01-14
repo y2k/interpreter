@@ -4,14 +4,14 @@ CODE_DIR := bin/android/app/src/main/java
 .PHONE: hot-reload
 hot-reload: build
 	@ cd bin/remote && adb push --sync *.txt /sdcard/Android/data/im.y2k.fixme/files
-	@ adb shell am start -S -n im.y2k.fixme/io.github.y2k.main\\\$$MainActivity
+	@ adb shell am start -S -n im.y2k.fixme/io.github.y2k.app\\\$$MainActivity
 
 .PHONY: run
 run: build_apk
 	@ adb install -r $(OUT_DIR)/android/app/build/outputs/apk/debug/app-debug.apk
 	@ adb shell "mkdir -p /sdcard/Android/data/im.y2k.fixme/files"
 	@ cd bin/remote && adb push --sync *.txt /sdcard/Android/data/im.y2k.fixme/files
-	@ adb shell am start -S -n im.y2k.fixme/io.github.y2k.main\\\$$MainActivity
+	@ adb shell am start -S -n im.y2k.fixme/io.github.y2k.app\\\$$MainActivity
 
 .PHONY: build
 build:
@@ -28,6 +28,10 @@ build_apk: build
 		-v $(CURDIR)/$(OUT_DIR)/temp/gradle:/root/.gradle \
 		-v $(CURDIR)/$(OUT_DIR)/android:/target \
 		y2khub/cljdroid build
+
+.PHONY: log
+log:
+	@ adb logcat -c && adb logcat im.y2k.fixme:V AndroidRuntime:E *:S
 
 .PHONY: clean
 clean:

@@ -21,10 +21,9 @@
 ;;
 
 (defn resolve-value [engine ctx name]
-  (let [value (get ctx name)]
-    (if (some? value)
-      value
-      (resolve-name engine name))))
+  (if (contains? ctx name)
+    (get ctx name)
+    (resolve-name engine name)))
 
 (defn- zipmap-merge [keys values dic]
   (if (empty? keys)
@@ -116,6 +115,7 @@
               "vector" (fn [xs] xs)
               "hash_map" (fn [key-values]
                            (hash-map-from key-values))
+              "get" (fn [[m k]] (get m k))
               "_PLUS_" (fn [[^int a ^int b]] (+ a b))
               "=" (fn [[a b]] (= a b))})
    :ctx {}})
