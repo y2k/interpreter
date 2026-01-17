@@ -36,6 +36,14 @@
 (defn- string-node? [s]
   (string/starts-with? s "\""))
 
+(defn- unescape-string [^String s]
+  (-> s
+      (clojure.string/replace "\\n" "\n")
+      (clojure.string/replace "\\t" "\t")
+      (clojure.string/replace "\\r" "\r")
+      (clojure.string/replace "\\\"" "\"")
+      (clojure.string/replace "\\\\" "\\")))
+
 (defn- number-node? [s]
   (re-find (re-pattern "^\\d+$") s))
 
@@ -69,8 +77,9 @@
                     (rest sexp))])
          ctx]))
     (cond
-      (string-node? sexp) (let [^int len (count sexp)]
-                            [(subs sexp 1 (- len 1)) ctx])
+      (string-node? sexp) (let [^int len (count sexp)
+                                raw (subs sexp 1 (- len 1))]
+                            [(unescape-string raw) ctx])
       (number-node? sexp) [(parse-int sexp) ctx]
       :else [(resolve-value engine ctx sexp) ctx])))
 
