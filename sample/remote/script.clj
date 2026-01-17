@@ -32,7 +32,8 @@
   ;;       wrong-indices (filter (fn [i] (not= i correct-idx)) all-indices)]
   ;;   ;; TODO: перемешать когда будет random
   ;;   (take 3 wrong-indices))
-  [0 1 2])
+  ;; TODO
+  [1 2 3])
 
 ;; Создать 4 варианта ответа с правильным на позиции correct-pos
 (defn- make-options [word-idx correct-pos]
@@ -67,7 +68,7 @@
 ;; Экран результата
 (defn- quiz-result-view [word-idx was-correct correct-answer]
   [:column
-   [:text (if was-correct "Правильно!" (str "Неправильно! Ответ: " correct-answer))]
+   [:text (if was-correct "Правильно!" (str "Неправильно!\nОтвет: " correct-answer))]
    [:button {:click {:type :home}} "Домой"]])
 
 (defn main [event]

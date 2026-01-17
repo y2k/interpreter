@@ -24,7 +24,6 @@
         ^ViewGroup container (:container state)
         ui-tree (i/engine-call engine "script.main" [click])
         ^View root-view (ui/render-ui ctx ui-tree (fn [c] (handle-click state-atom ctx c)))]
-    (.removeAllViews container)
     (.addView container root-view)
     nil))
 

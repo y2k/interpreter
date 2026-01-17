@@ -112,11 +112,11 @@
    :ns (atom {"str" (fn [xs] (string/join "" (map (fn [x] (str x)) xs)))
               "true" true
               "false" false
-              "vec" (fn [xs] xs)
-              "vector" (fn [xs] xs)
-              "concat" (fn [[a b]] (concat a b))
-              "take" (fn [[n coll]] (take n coll))
-              "drop" (fn [[n coll]] (drop n coll))
+              "vec" (fn [[coll]] (vec coll))
+              "vector" (fn [xs] (vec xs))
+              "concat" (fn [[a b]] (vec (concat a b)))
+              "take" (fn [[n coll]] (vec (take n coll)))
+              "drop" (fn [[n coll]] (vec (drop n coll)))
               "hash_map" (fn [key-values]
                            (hash-map-from key-values))
               "get" (fn [[m k]] (get m k))
