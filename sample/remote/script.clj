@@ -28,10 +28,11 @@
 
 ;; Получить 3 случайных неправильных ответа
 (defn- get-wrong-answers [correct-idx]
-  (let [all-indices (range (count WORDS))
-        wrong-indices (filter (fn [i] (not= i correct-idx)) all-indices)]
-    ;; TODO: перемешать когда будет random
-    (take 3 wrong-indices)))
+  ;; (let [all-indices (range (count WORDS))
+  ;;       wrong-indices (filter (fn [i] (not= i correct-idx)) all-indices)]
+  ;;   ;; TODO: перемешать когда будет random
+  ;;   (take 3 wrong-indices))
+  [0 1 2])
 
 ;; Создать 4 варианта ответа с правильным на позиции correct-pos
 (defn- make-options [word-idx correct-pos]
@@ -39,9 +40,10 @@
         wrong-indices (get-wrong-answers word-idx)
         wrong-words (map (fn [i] (get (get WORDS i) 2)) wrong-indices)
         options (vec wrong-words)]
-    (vec (concat (take correct-pos options)
-                 [correct-word]
-                 (drop correct-pos options)))))
+    (vec (concat
+          (concat (take correct-pos options)
+                  [correct-word])
+          (drop correct-pos options)))))
 
 ;; Экран вопроса
 (defn- quiz-question-view [word-idx correct-pos]
