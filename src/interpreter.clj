@@ -34,7 +34,7 @@
      (assoc dic (first keys) (first values)))))
 
 (defn- string-node? [s]
-  (string/starts-with? s "\""))
+  (clojure.string/starts-with? s "\""))
 
 (defn- unescape-string [^String s]
   (-> s
@@ -118,7 +118,7 @@
 ;; { :code-dir "" } -> engine
 (defn engine-create [opts]
   {:code-dir (:code-dir opts)
-   :ns (atom {"str" (fn [xs] (string/join "" (map (fn [x] (str x)) xs)))
+   :ns (atom {"str" (fn [xs] (clojure.string/join "" (map (fn [x] (str x)) xs)))
               "true" true
               "false" false
               "vec" (fn [[coll]] (vec coll))
