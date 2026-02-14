@@ -10,7 +10,7 @@
       (FIXME "test failed: " fname))))
 
 (defn- test-file? [^String name]
-  (if (string/starts-with? name "sample.test_")
+  (if (clojure.string/starts-with? name "sample.test_")
     (.endsWith name ".txt")
     false))
 
