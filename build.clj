@@ -1,4 +1,6 @@
-(ns build (:require ["$LY2K_PACKAGES_DIR/make/0.5.0/make" :as m]))
+(ns build (:require [make :as m]))
+
+(deps {:make "0.5.0"})
 
 (m/build
  {:rules
